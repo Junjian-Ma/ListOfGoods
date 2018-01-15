@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/margin_medium"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ImageView
+        android:id="@+id/main_image"
+        android:layout_width="@dimen/image_main_list_width"
+        android:layout_height="@dimen/image_main_list_height"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/todo"
+        android:layout_marginEnd="@dimen/margin_medium"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/main_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="name"
+            android:textSize="@dimen/text_large"/>
+
+        <TextView
+            android:id="@+id/main_supplier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="supplier"
+            android:textSize="@dimen/text_medium"/>
+
+        <TextView
+            android:id="@+id/main_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="quantity"
+            android:textSize="@dimen/text_medium"/>
+
+        <TextView
+            android:id="@+id/main_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="price"
+            android:textSize="@dimen/text_medium"/>
+
+    </LinearLayout>
+
+</LinearLayout>

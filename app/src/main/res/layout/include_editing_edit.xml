@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    style="@style/layout_style"
+    android:minWidth="@dimen/display_minWidth">
+
+    <EditText
+        android:id="@+id/supplier_edit"
+        style="@style/text_edit"
+        android:inputType="text"
+        tools:ignore="LabelFor"
+        tools:text="@string/supplier" />
+
+    <EditText
+        android:id="@+id/phone_edit"
+        style="@style/text_edit"
+        android:inputType="phone"
+        tools:ignore="LabelFor"
+        tools:text="@string/phoneNumber" />
+
+    <EditText
+        android:id="@+id/quantity_edit"
+        style="@style/text_edit"
+        android:inputType="number"
+        tools:ignore="LabelFor"
+        tools:text="@string/quantity" />
+
+    <EditText
+        android:id="@+id/price_edit"
+        style="@style/text_edit"
+        android:inputType="number"
+        tools:ignore="LabelFor"
+        tools:text="@string/price" />
+
+    <Spinner
+        android:id="@+id/transport_edit"
+        style="@style/text_edit"
+        android:layout_gravity="center_vertical"
+        android:minHeight="@dimen/spinner_minWidth"/>
+
+
+</LinearLayout>

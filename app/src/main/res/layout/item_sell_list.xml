@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/edit_quantity_about"
+        android:layout_weight="2"
+        style="@style/list_sell_about"
+        tools:text="@string/quantity"/>
+
+    <TextView
+        android:id="@+id/edit_price_about"
+        android:layout_weight="2"
+        style="@style/list_sell_about"
+        tools:text="@string/price"/>
+
+    <TextView
+        android:id="@+id/edit_time_about"
+        android:layout_weight="3"
+        style="@style/list_sell_about"
+        tools:text="@string/time"/>
+
+</LinearLayout>

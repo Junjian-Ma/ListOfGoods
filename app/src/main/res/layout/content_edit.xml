@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.android.listofgoods.EditActivity"
+    tools:showIn="@layout/activity_edit">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/margin_medium">
+
+            <include
+                android:id="@+id/include_name"
+                layout="@layout/include_name_edit"
+                android:layout_width="@dimen/name_width"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="@dimen/margin_medium" />
+
+            <RelativeLayout
+                android:id="@+id/goods_about"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/include_name"
+                android:layout_centerInParent="true">
+
+                <include
+                    android:id="@+id/include_title"
+                    layout="@layout/include_title_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/margin_small" />
+
+                <include
+                    android:id="@+id/include_display"
+                    layout="@layout/include_display_edit" />
+
+                <include
+                    android:id="@+id/include_edit"
+                    layout="@layout/include_editing_edit" />
+
+            </RelativeLayout>
+
+            <include
+                android:id="@+id/include_remarks_edit"
+                layout="@layout/include_remarks_edit"
+                android:layout_width="@dimen/remarks_width"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/goods_about"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="@dimen/margin_medium"
+                android:layout_marginStart="@dimen/margin_medium" />
+
+            <include
+                android:id="@+id/include_button"
+                layout="@layout/include_button_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/include_remarks_edit"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>
