@@ -60,14 +60,38 @@
         <item name="android:layout_weight">1</item>
     </style>
 
-    <style name="list_sell_about">
+    <style name="list_history">
         <item name="android:layout_width">@dimen/weight_zero_width</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/colorGray</item>
-        <item name="android:textSize">@dimen/text_large</item>
+        <item name="android:textSize">@dimen/text_medium</item>
         <item name="android:gravity">center</item>
         <item name="android:paddingTop">8dp</item>
-        <item name="android:paddingBottom">8dp</item>
+        <!--<item name="android:paddingBottom">8dp</item>-->
+    </style>
+
+    <style name="list_history_title">
+        <item name="android:layout_width">@dimen/weight_zero_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorGray</item>
+        <item name="android:textSize">@dimen/text_medium</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="diy_write_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:layout_marginBottom">@dimen/margin_small</item>
+    </style>
+
+    <style name="diy_write_edit">
+        <item name="android:layout_width">@dimen/diy_edit_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_large</item>
+        <item name="android:textColor">@color/colorBlack</item>
+        <item name="android:inputType">number</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

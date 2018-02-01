@@ -30,21 +30,25 @@ public class GoodsAdapter extends CursorAdapter{
     public void bindView(View view, Context context, Cursor cursor) {
         ViewHolder vh = new ViewHolder();
         vh.imageView = view.findViewById(R.id.main_image);
-        vh.name = view.findViewById(R.id.main_name);
-        vh.supplier = view.findViewById(R.id.main_supplier);
-        vh.quantity = view.findViewById(R.id.main_quantity);
-        vh.price = view.findViewById(R.id.main_price);
+        vh.nameText = view.findViewById(R.id.main_name);
+        vh.supplierText = view.findViewById(R.id.main_supplier);
+        vh.quantityText = view.findViewById(R.id.main_quantity);
+        vh.priceText = view.findViewById(R.id.main_price);
 
-        String name = cursor.getString(cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_NAME));
-        String supplier = cursor.getString(cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_SUPPLIER));
-        int quantity = cursor.getInt(cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_QUANTITY));
-        int price = cursor.getInt(cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_PRICE));
+        String goodsName = cursor.getString(cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_NAME));
+        String goodsSupplier = cursor.getString(cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_SUPPLIER));
+        int goodsQuantity = cursor.getInt(cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_QUANTITY));
+        int goodsPrice = cursor.getInt(cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_PRICE));
         String imageString = cursor.getString(cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_IMAGE));
 
-        vh.name.setText(name);
-        vh.supplier.setText(supplier);
-        vh.quantity.setText(String.valueOf(quantity));
-        vh.price.setText(String.valueOf(price));
+        String supplier = String.format(context.getString(R.string.supplierList_main), goodsSupplier);
+        String quantity = String.format(context.getString(R.string.remainingList_main), goodsQuantity);
+        String price = String.format(context.getString(R.string.pricingList_main), goodsPrice);
+
+        vh.nameText.setText(goodsName);
+        vh.supplierText.setText(supplier);
+        vh.quantityText.setText(String.valueOf(quantity));
+        vh.priceText.setText(String.valueOf(price));
 
         if (imageString == null) {
             vh.imageView.setImageResource(R.drawable.no_image);
@@ -58,9 +62,9 @@ public class GoodsAdapter extends CursorAdapter{
 
     private static class ViewHolder {
         ImageView imageView;
-        TextView name;
-        TextView supplier;
-        TextView quantity;
-        TextView price;
+        TextView nameText;
+        TextView supplierText;
+        TextView quantityText;
+        TextView priceText;
     }
 }

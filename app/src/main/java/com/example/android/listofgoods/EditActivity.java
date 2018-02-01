@@ -2,7 +2,6 @@ package com.example.android.listofgoods;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -35,7 +34,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.listofgoods.date.GoodsContract;
 import com.example.android.listofgoods.date.GoodsContract.GoodsEntry;
 
 import java.io.ByteArrayOutputStream;
@@ -71,6 +69,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     private FloatingActionButton mFloatingActionButton;
 
     private static final int PICK_IMAGE = 1;
+    private static final int PICK_URI = 0;
     private static final int GOODS_EDITOR = 0;
     private static final String GOODS_COUNT = "GoodsCount";
 
@@ -83,8 +82,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     private String mGoodsId = null;
     private int mTransportId = 0;
     private int mQuantity;
-    private int mSellQuantity;
-    private String mTime = "";
     private Uri mCursorGoodsUri;
     private static Bitmap mImageBitmap;
     private static final String LOG_TAG = EditActivity.class.getName();
@@ -130,11 +127,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             getLoaderManager().initLoader(GOODS_EDITOR, null, this);
         }
 
-
-//        ListView sellListView = findViewById(R.id.about_sell_list);
-//        mHistoryAdapter = new HistoryAdapter(this, null);
-//        sellListView.setAdapter(mHistoryAdapter);
-
         // 设置 “编辑或保存” 按钮参数
         FloatingActionButton editOrSave = findViewById(R.id.edit_or_save);
         editOrSave.setOnClickListener(new View.OnClickListener() {
@@ -160,12 +152,19 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
-
+                startActivityForResult(
+                        Intent.createChooser(intent, "Select Picture"),
+                        PICK_IMAGE);
             }
         });
         setupSpinner();
     }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        Log.i(LOG_TAG, "======= onResume =======" + mCursorGoodsUri);
+//    }
 
     public void onClick(View v) {
         switch (v.getId()) {
@@ -177,11 +176,14 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                 break;
             case R.id.button_sell_about:
                 Intent intent = new Intent(this, AboutSellActivity.class);
-                startActivity(intent);
+                intent.putExtra("goods_id", mGoodsId);
+                intent.setData(mCursorGoodsUri);
+                startActivityForResult(intent, PICK_URI);
                 break;
             default:
                 break;
         }
+
     }
 
     private void startFindViewById() {
@@ -225,20 +227,32 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PICK_IMAGE) {
-            super.onActivityResult(requestCode, resultCode, data);
-            if (data != null) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case PICK_IMAGE:
                 Uri imageUri = data.getData();
                 try {
                     mImageBitmap = MediaStore.Images.Media.getBitmap(
                             this.getContentResolver(), imageUri
                     );
+                    saveImage();
+                    mImageView.setImageBitmap(mImageBitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                saveImage();
-                mImageView.setImageBitmap(mImageBitmap);
-            }
+                break;
+            case PICK_URI:
+                if (resultCode == RESULT_OK) {
+                    mCursorGoodsUri = data.getData();
+                    getLoaderManager().restartLoader(
+                            GOODS_EDITOR,
+                            null,
+                            this);
+                    Log.i(LOG_TAG, "======= onResume =======" + mCursorGoodsUri);
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -404,6 +418,9 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             return;
         }
 
+        // 获取系统时间
+        String time = mUtils.getNowTime();
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(GoodsEntry.COLUMN_GOODS_NAME, name);
         contentValues.put(GoodsEntry.COLUMN_GOODS_MAIN, true);
@@ -411,10 +428,9 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         contentValues.put(GoodsEntry.COLUMN_GOODS_SUPPLIER, supplier);
         contentValues.put(GoodsEntry.COLUMN_GOODS_PHONE_NUMBER, phoneNumber);
         contentValues.put(GoodsEntry.COLUMN_GOODS_TRANSPORT, mTransportId);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_SELL_QUANTITY, mSellQuantity);
         contentValues.put(GoodsEntry.COLUMN_GOODS_PRICE, price);
         contentValues.put(GoodsEntry.COLUMN_GOODS_SELL_PRICE, price);// 默认出售价格与定价一致
-        contentValues.put(GoodsEntry.COLUMN_GOODS_TIME, mTime);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_TIME, time);
 
         if (mImageBitmap != null) {
             contentValues.put(GoodsEntry.COLUMN_GOODS_IMAGE, BitmapToString(mImageBitmap));
@@ -433,7 +449,11 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         contentValues.put(GoodsEntry.COLUMN_GOODS_ID, mGoodsId);
 
         if (isNewData) {
+            int sellQuantity = 0; // 出售数量默认是 0
+            contentValues.put(GoodsEntry.COLUMN_GOODS_SELL_QUANTITY, sellQuantity);
+
             contentValues.put(GoodsEntry.COLUMN_GOODS_QUANTITY, quantity);
+
             if (mCursorGoodsUri == null) {
                 Uri newUri = this.getContentResolver().insert(GoodsEntry.CONTENT_URI, contentValues);
                 if (newUri == null) {
@@ -450,33 +470,33 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
                 }
             }
         } else {
+            int sellQuantity = 1; // 按出售按钮时，默认出售 1 的数量
+            contentValues.put(GoodsEntry.COLUMN_GOODS_SELL_QUANTITY, sellQuantity);
             contentValues.put(GoodsEntry.COLUMN_GOODS_QUANTITY, mQuantity);
             setGoodsMainFalse(contentValues);
         }
     }
 
     private void setGoodsMainFalse(ContentValues contentValues) {
-        // 主 Activity 是根据 “MAIN” 值来判断，如果为 true，则显示出来，反之亦然。
-        // 更新当前 “main” 项设为 false，使之不在列表中显示出来。
-        contentValues.put(GoodsEntry.COLUMN_GOODS_MAIN, false);
+        // 创建一个新的 values 对象，更新 COLUMN_GOODS_MAIN 的值为 false
+        // 主 Activity 是根据 COLUMN_GOODS_MAIN 的值是否为 true 来决定是否显示
+        // 不能使用 contentValues 来更新 COLUMN_GOODS_MAIN， values 仅仅用来更新 COLUMN_GOODS_MAIN
+        ContentValues values = new ContentValues();
+        values.put(GoodsEntry.COLUMN_GOODS_MAIN, false);
         int rowsUpdate = getContentResolver().update(mCursorGoodsUri,
-                contentValues, null, null);
+                values, null, null);
         if (rowsUpdate == 0) {
             Log.i(LOG_TAG, getString(R.string.updateTextError));
         }
 
-        // 新建一行，并设置 “MAIN” 值为 true。
+        // insert 新的一行，并设置 COLUMN_GOODS_MAIN 值为 true。
         contentValues.put(GoodsEntry.COLUMN_GOODS_MAIN, true);
-        Uri newUri = getContentResolver().insert(GoodsEntry.CONTENT_URI, contentValues);
-        if (newUri == null) {
+        mCursorGoodsUri = getContentResolver().insert(GoodsEntry.CONTENT_URI, contentValues);
+        if (mCursorGoodsUri == null) {
             Toast.makeText(this, R.string.sellOne, Toast.LENGTH_SHORT).show();
         }
 
-        // 更新当前 uri，使 uir + 1，使当前的 GOOD_MAIN 一直为 true
-        Uri goodsUri = Uri.withAppendedPath(GoodsContract.BASE_CONTENT_URI, GoodsContract.PATH_GOODS);
-        long cursorGoodsUriId = ContentUris.parseId(mCursorGoodsUri);
-        Log.i(LOG_TAG, "++++++++++cursorGoodsUriId is " + cursorGoodsUriId);
-        mCursorGoodsUri = Uri.withAppendedPath(goodsUri, String.valueOf(cursorGoodsUriId + 1));
+        getLoaderManager().restartLoader(GOODS_EDITOR, null, this);
     }
 
     private void sellGoods() {
@@ -485,8 +505,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             return;
         }
         mQuantity = mQuantity - 1;
-        mSellQuantity = mSellQuantity + 1;
-        mTime = mUtils.getNowTime();
 
         mQuantityView.setText(String.valueOf(mQuantity));
         mQuantity_edit.setText(String.valueOf(mQuantity));
@@ -516,9 +534,16 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     }
 
     private void deleteGoods() {
+        String selection = GoodsEntry.COLUMN_GOODS_ID + "=?";
+        String[] selectionArgs = {String.valueOf(mGoodsId)};
+        // 因为有出售历史的记录，必须删除当前“行”与相应的出售历史
+        // 根据 mGoodsId 判断是否为同一产品
         if (mCursorGoodsUri != null) {
-            int rowsDelete = getContentResolver().delete(mCursorGoodsUri,
-                    null, null);
+            int rowsDelete = getContentResolver().delete(
+                    GoodsEntry.CONTENT_URI,
+                    selection,
+                    selectionArgs);
+
             if (rowsDelete == 0) {
                 Toast.makeText(this, R.string.deleteError, Toast.LENGTH_SHORT).show();
             } else {
@@ -549,6 +574,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         String[] projection = {
                 GoodsEntry._ID,
                 GoodsEntry.COLUMN_GOODS_ID,
+                GoodsEntry.COLUMN_GOODS_MAIN,
                 GoodsEntry.COLUMN_GOODS_NAME,
                 GoodsEntry.COLUMN_GOODS_REMARKS,
                 GoodsEntry.COLUMN_GOODS_SUPPLIER,
@@ -578,7 +604,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             int quantityIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_QUANTITY);
             int priceIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_PRICE);
             int remarkIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_REMARKS);
-            int sellQuantityIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_SELL_QUANTITY);
             int imageIdIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_IMAGE);
 
             mGoodsId = cursor.getString(goodsIdIndex);
@@ -588,7 +613,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             mQuantity = cursor.getInt(quantityIndex);
             String priceText = String.valueOf(cursor.getInt(priceIndex));
             String remarkText = cursor.getString(remarkIndex);
-            mSellQuantity = cursor.getInt(sellQuantityIndex);
             String imageString = cursor.getString(imageIdIndex);
 
             mGoodsIdView.setText(mGoodsId);

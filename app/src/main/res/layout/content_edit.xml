@@ -11,8 +11,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:padding="@dimen/margin_medium">
+            android:layout_gravity="center_horizontal">
 
             <include
                 android:id="@+id/include_name"
@@ -63,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/include_remarks_edit"
-                android:layout_centerInParent="true" />
+                android:layout_centerInParent="true"/>
 
         </RelativeLayout>
 

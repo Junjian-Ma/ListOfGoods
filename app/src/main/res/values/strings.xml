@@ -16,9 +16,9 @@
     <string name="timeIsNull">time is null</string>
     <string name="updateError">更新出错 ：</string>
     <string name="title_activity_edit">EditActivity</string>
-    <string name="toolTime">出售日期</string>
-    <string name="toolQuantity">出售数量</string>
-    <string name="toolPrice">出售价格</string>
+    <string name="sellTime">出售日期</string>
+    <string name="sellQuantity">出售数量</string>
+    <string name="sellPrice">出售价格</string>
     <string name="supplier">供应商</string>
     <string name="phoneNumber">电话号码</string>
     <string name="quantity">当前数量</string>
@@ -50,13 +50,22 @@
     <string name="imageIsNull">image is null</string>
     <string name="updateImageError">保存图片过程出错</string>
     <string name="time">出售时间</string>
-    <string name="gIdTwoZero">GID%1$2d</string>
-    <string name="gIdOneZero">GID%1$1d</string>
+    <string name="gIdTwoZero">GID00%1$d</string>
+    <string name="gIdOneZero">GID0%1$d</string>
     <string name="gIdZeroZero">GID%1$d</string>
     <string name="sellOne">已经售出 1</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="sellAboutText">出售历史</string>
     <string name="quantityIsZero">产品数量为零</string>
+    <string name="diySellString">自定义出售</string>
+    <string name="sellHistoryString">出售历史记录</string>
+    <string name="sellString">出售</string>
+
+    <string name="remainingString">剩余数量:%1$d</string>
+    <string name="pricingString">当前定价:%1$d</string>
+    <string name="supplierList_main">供应商：%1$s</string>
+    <string name="remainingList_main">剩余数量：%1$d</string>
+    <string name="pricingList_main">产品定价：%1$d</string>
+    <string name="noHasHistory">暂无出售历史记录</string>
 </resources>

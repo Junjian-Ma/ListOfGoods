@@ -1,14 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/margin_medium"
     tools:context="com.example.android.listofgoods.AboutSellActivity">
 
-    <ListView
-        android:id="@+id/about_sell_list"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/item_sell_list" />
+        android:layout_marginBottom="@dimen/margin_small"
+        android:text="@string/diySellString"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_very_large" />
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/margin_small">
+
+        <TextView
+            android:id="@+id/pricing_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_large"
+            tools:text="当前定价" />
+
+        <TextView
+            android:id="@+id/remaining_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="剩余数量" />
+
+    </LinearLayout>
+
+    <include
+        layout="@layout/include_diy_write"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_small"
+        android:text="@string/sellHistoryString"
+        android:textColor="@color/colorBlack"
+        android:textSize="@dimen/text_very_large" />
+
+    <include layout="@layout/include_history_list" />
+
+</LinearLayout>

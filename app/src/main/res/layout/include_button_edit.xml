@@ -3,24 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:padding="@dimen/margin_medium">
 
     <Button
         style="@style/edit_button"
         android:id="@+id/button_buy"
         android:text="@string/buyText"
-        tools:ignore="ButtonStyle"/>
+        tools:ignore="ButtonStyle"
+        android:onClick="onClick"/>
 
     <Button
         style="@style/edit_button"
         android:id="@+id/button_sell"
         android:text="@string/sellText"
-        tools:ignore="ButtonStyle" />
+        tools:ignore="ButtonStyle"
+        android:onClick="onClick" />
 
     <Button
         style="@style/edit_button"
         android:id="@+id/button_sell_about"
         android:text="@string/sellAboutText"
-        tools:ignore="ButtonStyle"/>
+        tools:ignore="ButtonStyle"
+        android:onClick="onClick"/>
 
 </LinearLayout>
