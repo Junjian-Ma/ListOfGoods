@@ -23,6 +23,8 @@ import android.widget.ListView;
 
 import com.example.android.listofgoods.date.GoodsContract.GoodsEntry;
 
+import java.util.Collections;
+
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 

@@ -121,6 +121,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         if (mCursorGoodsUri == null) {
             toggleEditMode(false);
             mIsEditing = true;
+            mImageBitmap = null; // 新建时图片默认为空
         } else {
             toggleEditMode(true);
             mIsEditing = false;
@@ -159,12 +160,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         });
         setupSpinner();
     }
-
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        Log.i(LOG_TAG, "======= onResume =======" + mCursorGoodsUri);
-//    }
 
     public void onClick(View v) {
         switch (v.getId()) {
