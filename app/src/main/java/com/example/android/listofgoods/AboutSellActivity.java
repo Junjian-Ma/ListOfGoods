@@ -102,7 +102,7 @@ public class AboutSellActivity extends AppCompatActivity
         } else {
             Toast.makeText(
                     this,
-                    "出售数量或出售价格不能为空",
+                    R.string.editTextIsNull,
                     Toast.LENGTH_SHORT).show();
             return;
         }

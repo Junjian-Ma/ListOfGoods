@@ -68,4 +68,11 @@
     <string name="remainingList_main">剩余数量：%1$d</string>
     <string name="pricingList_main">产品定价：%1$d</string>
     <string name="noHasHistory">暂无出售历史记录</string>
+    <string name="editTextIsNull">出售数量或出售价格不能为空</string>
+    <string name="deleteOrNot">是否删除当前的产品</string>
+    <string name="yesDetele">是的，删除</string>
+    <string name="no">不了</string>
+    <string name="saveOrNot">有未保存的更改，是否直接退出</string>
+    <string name="noSave">直接退出</string>
+    <string name="Continue">继续编辑</string>
 </resources>

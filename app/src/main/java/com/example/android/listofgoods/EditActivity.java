@@ -514,14 +514,14 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void showDelete() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("是否删除当前的产品");
-        builder.setPositiveButton("是的，删除", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.deleteOrNot);
+        builder.setPositiveButton(R.string.yesDetele, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 deleteGoods();
             }
         });
-        builder.setNegativeButton("不了", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (dialogInterface != null) {
@@ -555,9 +555,9 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void showUnsavedChangesDialog(DialogInterface.OnClickListener onClickListener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("有未保存的更改，是否直接退出");
-        builder.setPositiveButton("直接退出", onClickListener);
-        builder.setNegativeButton("继续编辑", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.saveOrNot);
+        builder.setPositiveButton(R.string.noSave, onClickListener);
+        builder.setNegativeButton(R.string.Continue, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (dialogInterface != null) {
