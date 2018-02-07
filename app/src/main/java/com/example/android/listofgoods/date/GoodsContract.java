@@ -6,25 +6,25 @@ import android.provider.BaseColumns;
 
 public class GoodsContract {
 
-    public static final String CONTENT_AUTHORITY = "com.example.android.listofgoods";
+    static final String CONTENT_AUTHORITY = "com.example.android.listofgoods";
 
-    public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
-    public static final String PATH_GOODS = "goods";
+    static final String PATH_GOODS = "goods";
 
     private GoodsContract() {
     }
 
     public static class GoodsEntry implements BaseColumns {
         // 指定 MIME 列表类型常量
-        public static final String CONTENT_LIST_TYPE =
+        static final String CONTENT_LIST_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + PATH_GOODS;
 
         // 指定 MIME 个数类型常量
-        public static final String CONTENT_ITEM_TYPE =
+        static final String CONTENT_ITEM_TYPE =
                 ContentResolver.ANY_CURSOR_ITEM_TYPE + "/" + CONTENT_AUTHORITY + PATH_GOODS;
 
-        public static final String TABLE_NAME = "goods";
+        static final String TABLE_NAME = "goods";
 
         public static final Uri CONTENT_URI = Uri.withAppendedPath(BASE_CONTENT_URI, PATH_GOODS);
 

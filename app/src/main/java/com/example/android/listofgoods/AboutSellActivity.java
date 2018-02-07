@@ -19,6 +19,8 @@ import android.widget.Toast;
 
 import com.example.android.listofgoods.date.GoodsContract.GoodsEntry;
 
+import java.util.regex.Pattern;
+
 public class AboutSellActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -94,10 +96,23 @@ public class AboutSellActivity extends AppCompatActivity
         String writeQuantityString = mWriteQuantity.getText().toString();
         String writePriceString = mWritePrice.getText().toString();
 
-        if (!writeQuantityString.equals("") && !writePriceString.equals("")) {
+        if (!writeQuantityString.equals("") &&
+                !writePriceString.equals("") &&
+                isInteger(writePriceString) &&
+                isInteger(writePriceString)) {
             mSellQuantity = Integer.valueOf(writeQuantityString);
             mSellPrice = Integer.valueOf(writePriceString);
-
+            if (mQuantity == 0) {
+                Toast.makeText(this,
+                        R.string.soldOut,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            } else if (mQuantity < mSellQuantity) {
+                Toast.makeText(this,
+                        R.string.writeOverflow,
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
             mQuantity = mQuantity - mSellQuantity;
         } else {
             Toast.makeText(
@@ -135,6 +150,11 @@ public class AboutSellActivity extends AppCompatActivity
         mCursorGoodsUri = getContentResolver().insert(GoodsEntry.CONTENT_URI, contentValues);
 
         getLoaderManager().restartLoader(GOODS_ITEM, null, this);
+    }
+
+    private static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-+]?[\\d]*$");
+        return pattern.matcher(str).matches();
     }
 
     @Override

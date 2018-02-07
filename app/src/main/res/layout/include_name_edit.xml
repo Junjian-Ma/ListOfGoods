@@ -4,6 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <!--TextView 在浏览模式下显示， EditView 在编辑模式下显示-->
     <TextView
         android:id="@+id/title_text"
         style="@style/goods_name"

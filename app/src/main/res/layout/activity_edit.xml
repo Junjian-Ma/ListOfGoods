@@ -51,7 +51,7 @@
         android:layout_margin="@dimen/margin_medium"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@drawable/ic_wallpaper_white_24dp" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/edit_or_save"
@@ -59,6 +59,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/margin_medium"
-        app:srcCompat="@android:drawable/ic_menu_add" />
+        app:srcCompat="@drawable/ic_save_white_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

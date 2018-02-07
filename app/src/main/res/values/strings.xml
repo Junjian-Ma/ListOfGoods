@@ -30,11 +30,11 @@
     <string name="sea">海运</string>
     <string name="todo">null</string>
     <string name="name">产品名称</string>
-    <string name="nameTextIsNull">产品名称不能为空</string>
-    <string name="supplierTextIsNull">供应商不能为空</string>
-    <string name="phoneNumberTextIsNull">联系方式不能为空</string>
-    <string name="quantityTextIsNull">当前数量不能为空</string>
-    <string name="priceTextIsNull">进货价格不能为空</string>
+    <string name="nameTextIsNull">产品名称输入有误</string>
+    <string name="supplierTextIsNull">供应商输入有误</string>
+    <string name="phoneNumberTextIsNull">联系方式输入有误</string>
+    <string name="quantityTextIsNull">当前数量输入有误</string>
+    <string name="priceTextIsNull">进货价格输入有误</string>
     <string name="insertTextError">添加出错</string>
     <string name="insertTextDone">已添加成功</string>
     <string name="updateTextError">更新出错</string>
@@ -68,11 +68,17 @@
     <string name="remainingList_main">剩余数量：%1$d</string>
     <string name="pricingList_main">产品定价：%1$d</string>
     <string name="noHasHistory">暂无出售历史记录</string>
-    <string name="editTextIsNull">出售数量或出售价格不能为空</string>
+    <string name="editTextIsNull">出售数量或出售价格输入有误</string>
     <string name="deleteOrNot">是否删除当前的产品</string>
     <string name="yesDetele">是的，删除</string>
     <string name="no">不了</string>
     <string name="saveOrNot">有未保存的更改，是否直接退出</string>
     <string name="noSave">直接退出</string>
     <string name="Continue">继续编辑</string>
+    <string name="addGoods">添加产品</string>
+    <string name="infoGoods">产品信息</string>
+    <string name="editGoods">编辑产品</string>
+    <string name="noHasGoodsList">暂无任何产品数据</string>
+    <string name="writeOverflow">输入的数值超出剩余数量</string>
+    <string name="soldOut">该产品已无存货</string>
 </resources>

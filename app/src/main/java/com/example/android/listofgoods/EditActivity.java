@@ -17,12 +17,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -38,6 +39,7 @@ import com.example.android.listofgoods.date.GoodsContract.GoodsEntry;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.regex.Pattern;
 
 public class EditActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -77,11 +79,14 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     private boolean mGoodsHasChanged = false;
     // 设定一个 boolean 来判断是否为 编辑模式
     private boolean mIsEditing = false;
+    // 设定一个 boolean 来判断是否已保存输入的内容；
+    private boolean mIsSaveData = false;
 
     private int mGoodsIdNumber;
     private String mGoodsId = null;
-    private int mTransportId = 0;
+    private int mPhoneNumber;
     private int mQuantity;
+    private int mTransportId = 0;
     private Uri mCursorGoodsUri;
     private static Bitmap mImageBitmap;
     private static final String LOG_TAG = EditActivity.class.getName();
@@ -89,11 +94,24 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     private Utils mUtils;
 
     // 使用 OnTouchListener 检查输入框等是否发生了变化。
-    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+    private TextWatcher mTextWatcher = new TextWatcher() {
         @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            mGoodsHasChanged = true;
-            return false;
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            // 点击进入某个产品信息后，判断是否有改变内容文本
+            // mGoodsHasChanged 为 true，则文本内容已发生改变
+            // 如果 mIsSaveDate 为 false，输入内容未保存，此时返回主界面弹出提示
+            if (!mIsSaveData) {
+                mGoodsHasChanged = true;
+            }
         }
     };
 
@@ -106,8 +124,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
         mUtils = new Utils();
 
-        // 把标题设置为空
-        setTitle("");
         // 设置所有部件的 ID
         startFindViewById();
 
@@ -119,10 +135,23 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // 判断 mCursorGoodsUri 是否为空，为空则说明当前为 “新建”， 反之为 “编辑”
         if (mCursorGoodsUri == null) {
+            setTitle(getString(R.string.addGoods));
+
             toggleEditMode(false);
             mIsEditing = true;
+            mIsSaveData = false;
             mImageBitmap = null; // 新建时图片默认为空
+
+            // 当为“新建”模式时，启动监听 EditView，判断用户是否有输入内容
+            mName_edit.addTextChangedListener(mTextWatcher);
+            mSupplier_edit.addTextChangedListener(mTextWatcher);
+            mPhone_number_edit.addTextChangedListener(mTextWatcher);
+            mQuantity_edit.addTextChangedListener(mTextWatcher);
+            mPrice_edit.addTextChangedListener(mTextWatcher);
+            mRemarks_edit.addTextChangedListener(mTextWatcher);
         } else {
+            setTitle(getString(R.string.infoGoods));
+
             toggleEditMode(true);
             mIsEditing = false;
             getLoaderManager().initLoader(GOODS_EDITOR, null, this);
@@ -134,14 +163,33 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             @Override
             public void onClick(View view) {
                 if (mIsEditing) {
-                    mFloatingActionButton.setImageResource(android.R.drawable.ic_menu_add);// 改变图标
-                    saveDate(true);
-                    mGoodsHasChanged = !mGoodsHasChanged;
+                    // 改变图标
+                    mFloatingActionButton.setImageResource(R.drawable.ic_create_white_24dp);
+                    if (saveData(true)) {
+                        // 当 mGoodsHasChanged 为 false，不显示返回主界面的“未保存”提示
+                        mGoodsHasChanged = false;
+                        mIsSaveData = true;
+
+                        toggleEditMode(mIsEditing);// 切换为编辑模式或者显示模式
+                        mIsEditing = !mIsEditing;
+                    }
                 } else {
-                    mFloatingActionButton.setImageResource(android.R.drawable.ic_menu_save);
+                    // 改变图标
+                    mFloatingActionButton.setImageResource(R.drawable.ic_save_white_24dp);
+
+                    mIsSaveData = false;
+
+                    // 当前在预览模式时，点击按钮进入编辑模式，启动监听 EditView，判断用户是否有更改输入内容
+                    mName_edit.addTextChangedListener(mTextWatcher);
+                    mSupplier_edit.addTextChangedListener(mTextWatcher);
+                    mPhone_number_edit.addTextChangedListener(mTextWatcher);
+                    mQuantity_edit.addTextChangedListener(mTextWatcher);
+                    mPrice_edit.addTextChangedListener(mTextWatcher);
+                    mRemarks_edit.addTextChangedListener(mTextWatcher);
+
+                    toggleEditMode(mIsEditing);// 切换为编辑模式或者显示模式
+                    mIsEditing = !mIsEditing;
                 }
-                toggleEditMode(mIsEditing);// 切换为编辑模式或者显示模式
-                mIsEditing = !mIsEditing;
             }
         });
 
@@ -164,7 +212,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_buy:
-                mUtils.composeEmail(this, mNameView.getText().toString().trim());
+                mUtils.dialPhoneNumber(this, String.valueOf(mPhoneNumber));
                 break;
             case R.id.button_sell:
                 sellGoods();
@@ -209,45 +257,38 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         mSellButton = findViewById(R.id.button_sell);
         mSellAboutButton = findViewById(R.id.button_sell_about);
 
-        mFloatingActionButton = findViewById(R.id.new_goods);
-
-        mName_edit.setOnTouchListener(mTouchListener);
-        mSupplier_edit.setOnTouchListener(mTouchListener);
-        mPhone_number_edit.setOnTouchListener(mTouchListener);
-        mQuantity_edit.setOnTouchListener(mTouchListener);
-        mPrice_edit.setOnTouchListener(mTouchListener);
-        mRemarks_edit.setOnTouchListener(mTouchListener);
-        mSpinnerView.setOnTouchListener(mTouchListener);
+        mFloatingActionButton = findViewById(R.id.edit_or_save);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case PICK_IMAGE:
-                Uri imageUri = data.getData();
-                try {
-                    mImageBitmap = MediaStore.Images.Media.getBitmap(
-                            this.getContentResolver(), imageUri
-                    );
-                    saveImage();
-                    mImageView.setImageBitmap(mImageBitmap);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case PICK_URI:
-                if (resultCode == RESULT_OK) {
-                    mCursorGoodsUri = data.getData();
-                    getLoaderManager().restartLoader(
-                            GOODS_EDITOR,
-                            null,
-                            this);
-                    Log.i(LOG_TAG, "======= onResume =======" + mCursorGoodsUri);
-                }
-                break;
-            default:
-                break;
+        if (data != null) {
+            switch (requestCode) {
+                case PICK_IMAGE:
+                    Uri imageUri = data.getData();
+                    try {
+                        mImageBitmap = MediaStore.Images.Media.getBitmap(
+                                this.getContentResolver(), imageUri
+                        );
+                        saveImage();
+                        mImageView.setImageBitmap(mImageBitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case PICK_URI:
+                    if (resultCode == RESULT_OK) {
+                        mCursorGoodsUri = data.getData();
+                        getLoaderManager().restartLoader(
+                                GOODS_EDITOR,
+                                null,
+                                this);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     }
 
@@ -277,8 +318,16 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         }
     }
 
-    private void toggleEditMode(boolean isEditing) {
-        if (!isEditing) {
+    private void toggleEditMode(boolean setBrowse) {
+        // 如果不是在编辑状态，则 EditView 显示，TextView 隐藏。
+        // 如果是新建，则默认不为浏览模式，进入编辑模式
+        if (!setBrowse) {
+            if (mCursorGoodsUri != null) {
+                setTitle(R.string.editGoods);
+            } else {
+                setTitle(R.string.addGoods);
+            }
+
             // 内容文本隐形
             mNameView.setVisibility(View.INVISIBLE);
             mDisplay_layout.setVisibility(View.INVISIBLE);
@@ -291,6 +340,8 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             mEdit_layout.setVisibility(View.VISIBLE);
             mRemarks_edit.setVisibility(View.VISIBLE);
         } else {
+            setTitle(R.string.infoGoods);
+
             //内容文本显示
             mNameView.setVisibility(View.VISIBLE);
             mDisplay_layout.setVisibility(View.VISIBLE);
@@ -317,6 +368,10 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         mSpinnerView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                // 判断 mSpinnerView 是否有改变
+                // 如果有，没保存时返回主界面，弹出提示
+                spinnerChanged();
+
                 String selection = (String) adapterView.getItemAtPosition(i);
                 if (!TextUtils.isEmpty(selection)) {
                     if (selection.equals(getString(R.string.land))) {
@@ -357,38 +412,40 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             case android.R.id.home:
                 if (!mGoodsHasChanged) {
                     NavUtils.navigateUpFromSameTask(this);
-                    return true;
+                } else {
+                    DialogInterface.OnClickListener onClickListener =
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    NavUtils.navigateUpFromSameTask(EditActivity.this);
+                                }
+                            };
+                    showUnsavedChangesDialog(onClickListener);
                 }
-                DialogInterface.OnClickListener onClickListener =
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                NavUtils.navigateUpFromSameTask(EditActivity.this);
-                            }
-                        };
-                showUnsavedChangesDialog(onClickListener);
                 return true;
             default:
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
+
         if (!mGoodsHasChanged) {
             super.onBackPressed();
-            return;
+        } else {
+            DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            };
+            showUnsavedChangesDialog(onClickListener);
         }
-        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                finish();
-            }
-        };
-        showUnsavedChangesDialog(onClickListener);
     }
 
-    public void saveDate(boolean isNewData) {
+    public boolean saveData(boolean isNewData) {
         String name = mName_edit.getText().toString().trim();
         String supplier = mSupplier_edit.getText().toString().trim();
         String phoneNumber = mPhone_number_edit.getText().toString().trim();
@@ -398,19 +455,19 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(this, R.string.nameTextIsNull, Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         } else if (TextUtils.isEmpty(supplier)) {
             Toast.makeText(this, R.string.supplierTextIsNull, Toast.LENGTH_SHORT).show();
-            return;
-        } else if (TextUtils.isEmpty(phoneNumber)) {
+            return false;
+        } else if (TextUtils.isEmpty(phoneNumber) && !isInteger(phoneNumber)) {
             Toast.makeText(this, R.string.phoneNumberTextIsNull, Toast.LENGTH_SHORT).show();
-            return;
-        } else if (TextUtils.isEmpty(quantity)) {
+            return false;
+        } else if (TextUtils.isEmpty(quantity) && !isInteger(quantity)) {
             Toast.makeText(this, R.string.quantityTextIsNull, Toast.LENGTH_SHORT).show();
-            return;
-        } else if (TextUtils.isEmpty(price)) {
+            return false;
+        } else if (TextUtils.isEmpty(price) && !isInteger(price)) {
             Toast.makeText(this, R.string.priceTextIsNull, Toast.LENGTH_SHORT).show();
-            return;
+            return false;
         }
 
         // 获取系统时间
@@ -470,6 +527,13 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             contentValues.put(GoodsEntry.COLUMN_GOODS_QUANTITY, mQuantity);
             setGoodsMainFalse(contentValues);
         }
+
+        return true;
+    }
+
+    private static boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-+]?[\\d]*$");
+        return pattern.matcher(str).matches();
     }
 
     private void setGoodsMainFalse(ContentValues contentValues) {
@@ -504,7 +568,15 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         mQuantityView.setText(String.valueOf(mQuantity));
         mQuantity_edit.setText(String.valueOf(mQuantity));
 
-        saveDate(false);
+        saveData(false);
+    }
+
+    private void spinnerChanged() {
+        if (!mIsSaveData) {
+            if (mTransportId != mSpinnerView.getSelectedItemPosition()) {
+                mGoodsHasChanged = true;
+            }
+        }
     }
 
     private void showDelete() {
@@ -596,6 +668,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             int nameIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_NAME);
             int supplierIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_SUPPLIER);
             int phoneIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_PHONE_NUMBER);
+            int transportIdIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_TRANSPORT);
             int quantityIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_QUANTITY);
             int priceIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_PRICE);
             int remarkIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_REMARKS);
@@ -604,24 +677,24 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             mGoodsId = cursor.getString(goodsIdIndex);
             String nameText = cursor.getString(nameIndex);
             String supplierText = cursor.getString(supplierIndex);
-            String phoneNumberText = String.valueOf(cursor.getInt(phoneIndex));
+            mPhoneNumber = cursor.getInt(phoneIndex);
+            mTransportId = cursor.getInt(transportIdIndex);
             mQuantity = cursor.getInt(quantityIndex);
-            String priceText = String.valueOf(cursor.getInt(priceIndex));
+            int price = cursor.getInt(priceIndex);
             String remarkText = cursor.getString(remarkIndex);
             String imageString = cursor.getString(imageIdIndex);
 
             mGoodsIdView.setText(mGoodsId);
             mNameView.setText(nameText);
             mSupplierView.setText(supplierText);
-            mPhoneNumberView.setText(phoneNumberText);
-            mPriceView.setText(priceText);
-
+            mPhoneNumberView.setText(String.valueOf(mPhoneNumber));
+            mPriceView.setText(String.valueOf(price));
             mRemarksView.setText(remarkText);
 
             mName_edit.setText(nameText);
             mSupplier_edit.setText(supplierText);
-            mPhone_number_edit.setText(phoneNumberText);
-            mPrice_edit.setText(priceText);
+            mPhone_number_edit.setText(String.valueOf(mPhoneNumber));
+            mPrice_edit.setText(String.valueOf(price));
             mRemarks_edit.setText(remarkText);
 
             String quantityString = String.valueOf(mQuantity);

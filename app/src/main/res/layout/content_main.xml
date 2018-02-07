@@ -13,8 +13,19 @@
         android:layout_width="@dimen/image_main_width"
         android:layout_height="@dimen/image_main_height"
         android:layout_centerInParent="true"
+        android:contentDescription="@string/noHasGoodsList"
         android:scaleType="centerCrop"
         android:src="@drawable/no_image" />
+
+    <TextView
+        android:id="@+id/no_had_goods_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/main_no_data"
+        android:layout_centerInParent="true"
+        android:text="@string/noHasGoodsList"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/text_large" />
 
     <ListView
         android:id="@+id/main_list"
