@@ -7,6 +7,7 @@ import android.net.Uri;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 class Utils {
     void dialPhoneNumber(Context context, String phoneNumber) {
@@ -15,6 +16,11 @@ class Utils {
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(intent);
         }
+    }
+
+    boolean isInteger(String str) {
+        Pattern pattern = Pattern.compile("^[-+]?[\\d]*$");
+        return pattern.matcher(str).matches();
     }
 
     String getNowTime() {

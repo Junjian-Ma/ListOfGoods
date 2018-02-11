@@ -23,7 +23,8 @@ import android.widget.ListView;
 
 import com.example.android.listofgoods.date.GoodsContract.GoodsEntry;
 
-import java.util.Collections;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -37,10 +38,20 @@ public class MainActivity extends AppCompatActivity
     private GoodsAdapter goodsAdapter;
     private int goodsCount;
 
+    @BindView(R.id.main_list)
+    ListView listView;
+    @BindView(R.id.main_no_data)
+    ImageView imageView;
+    @BindView(R.id.new_goods)
+    FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ButterKnife.bind(this);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -61,7 +72,6 @@ public class MainActivity extends AppCompatActivity
                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
         }
 
-        FloatingActionButton fab = findViewById(R.id.new_goods);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,8 +84,6 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        ListView listView = findViewById(R.id.main_list);
-        ImageView imageView = findViewById(R.id.main_no_data);
         goodsAdapter = new GoodsAdapter(this, null);
         listView.setDividerHeight(0);
         listView.setAdapter(goodsAdapter);
@@ -84,10 +92,11 @@ public class MainActivity extends AppCompatActivity
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                 Uri currentGoodsUri = ContentUris.withAppendedId(GoodsEntry.CONTENT_URI, l);
                 Intent intent = new Intent(MainActivity.this, EditActivity.class);
                 intent.setData(currentGoodsUri);
-                Log.i(LOG_TAG, "currentGoodsUri is : " + currentGoodsUri);
+                Log.i(LOG_TAG, "currentGoodsUri ===== " + currentGoodsUri);
                 startActivity(intent);
             }
         });

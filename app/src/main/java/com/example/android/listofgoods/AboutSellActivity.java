@@ -19,17 +19,29 @@ import android.widget.Toast;
 
 import com.example.android.listofgoods.date.GoodsContract.GoodsEntry;
 
-import java.util.regex.Pattern;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class AboutSellActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private HistoryAdapter historyAdapter;
 
-    private TextView mPricingText;
-    private TextView mRemainingText;
-    private EditText mWriteQuantity;
-    private EditText mWritePrice;
+    @BindView(R.id.pricing_text)
+    TextView pricingText;
+    @BindView(R.id.remaining_text)
+    TextView remainingText;
+    @BindView(R.id.diy_quantity_edit)
+    EditText writeQuantity;
+    @BindView(R.id.diy_price_edit)
+    EditText writePrice;
+
+    @BindView(R.id.about_sell_list)
+    ListView listView;
+    @BindView(R.id.no_has_history_text)
+    TextView noHasHistory;
+    @BindView(R.id.history_title_text)
+    LinearLayout historyTitle;
 
     private static final int GOODS_ITEM = 0;
     private static final int GOODS_LIST = 1;
@@ -54,20 +66,14 @@ public class AboutSellActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_sell);
-
-        mPricingText = findViewById(R.id.pricing_text);
-        mRemainingText = findViewById(R.id.remaining_text);
-        mWriteQuantity = findViewById(R.id.diy_quantity_edit);
-        mWritePrice = findViewById(R.id.diy_price_edit);
+        ButterKnife.bind(this);
 
         Intent intent = getIntent();
         mGoodsId = intent.getStringExtra("goods_id");
         mCursorGoodsUri = intent.getData();
 
         historyAdapter = new HistoryAdapter(this, null);
-        ListView listView = findViewById(R.id.about_sell_list);
-        TextView noHasHistory = findViewById(R.id.no_has_history_text);
-        LinearLayout historyTitle = findViewById(R.id.history_title_text);
+
         listView.setAdapter(historyAdapter);
         listView.setEmptyView(noHasHistory);
         if (listView.getVisibility() != View.VISIBLE) {
@@ -93,16 +99,22 @@ public class AboutSellActivity extends AppCompatActivity
     }
 
     private void sellAndSave() {
-        String writeQuantityString = mWriteQuantity.getText().toString();
-        String writePriceString = mWritePrice.getText().toString();
+        String writeQuantityString = writeQuantity.getText().toString();
+        String writePriceString = writePrice.getText().toString();
 
-        if (!writeQuantityString.equals("") &&
-                !writePriceString.equals("") &&
-                isInteger(writePriceString) &&
-                isInteger(writePriceString)) {
+        Utils utils = new Utils();
+        if (!writeQuantityString.equals("")
+                && !writePriceString.equals("")
+                && utils.isInteger(writePriceString)
+                && utils.isInteger(writePriceString)) {
             mSellQuantity = Integer.valueOf(writeQuantityString);
             mSellPrice = Integer.valueOf(writePriceString);
-            if (mQuantity == 0) {
+
+            if (mSellQuantity == 0 || mSellPrice == 0) {
+                Toast.makeText(this,
+                        R.string.canNoBeZero,
+                        Toast.LENGTH_SHORT).show();
+            } else if (mQuantity == 0) {
                 Toast.makeText(this,
                         R.string.soldOut,
                         Toast.LENGTH_SHORT).show();
@@ -150,11 +162,6 @@ public class AboutSellActivity extends AppCompatActivity
         mCursorGoodsUri = getContentResolver().insert(GoodsEntry.CONTENT_URI, contentValues);
 
         getLoaderManager().restartLoader(GOODS_ITEM, null, this);
-    }
-
-    private static boolean isInteger(String str) {
-        Pattern pattern = Pattern.compile("^[-+]?[\\d]*$");
-        return pattern.matcher(str).matches();
     }
 
     @Override
@@ -239,8 +246,8 @@ public class AboutSellActivity extends AppCompatActivity
                 mImageId = cursor.getString(imageIdIndex);
                 mTime = cursor.getString(timeIndex);
 
-                mRemainingText.setText(String.format(getString(R.string.remainingString), mQuantity));
-                mPricingText.setText(String.format(getString(R.string.pricingString), mPrice));
+                remainingText.setText(String.format(getString(R.string.remainingString), mQuantity));
+                pricingText.setText(String.format(getString(R.string.pricingString), mPrice));
             }
         }
     }

@@ -70,7 +70,7 @@
     <string name="noHasHistory">暂无出售历史记录</string>
     <string name="editTextIsNull">出售数量或出售价格输入有误</string>
     <string name="deleteOrNot">是否删除当前的产品</string>
-    <string name="yesDetele">是的，删除</string>
+    <string name="yesDelete">是的，删除</string>
     <string name="no">不了</string>
     <string name="saveOrNot">有未保存的更改，是否直接退出</string>
     <string name="noSave">直接退出</string>
@@ -81,4 +81,5 @@
     <string name="noHasGoodsList">暂无任何产品数据</string>
     <string name="writeOverflow">输入的数值超出剩余数量</string>
     <string name="soldOut">该产品已无存货</string>
+    <string name="canNoBeZero">设置出售数量与价格不能为 0</string>
 </resources>

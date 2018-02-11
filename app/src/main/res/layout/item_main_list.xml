@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants">
 
     <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
@@ -34,20 +35,7 @@
                 android:orientation="vertical"
                 android:padding="@dimen/margin_small">
 
-                <TextView
-                    android:id="@+id/main_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_large"
-                    tools:text="name"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/main_supplier"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_medium"
-                    tools:text="supplier" />
+                <include layout="@layout/include_main_item_text_button"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.example.android.listofgoods.date.GoodsContract.GoodsEntry;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class HistoryAdapter extends CursorAdapter {
 
     HistoryAdapter(Context context, Cursor cursor) {
@@ -24,10 +27,7 @@ public class HistoryAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ViewHolder vh = new ViewHolder();
-        vh.mAboutQuantity = view.findViewById(R.id.edit_quantity_about);
-        vh.mAboutPrice = view.findViewById(R.id.edit_price_about);
-        vh.mAboutTime = view.findViewById(R.id.edit_time_about);
+        ViewHolder vh = new ViewHolder(view);
 
         int quantityIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_SELL_QUANTITY);
         int priceIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_SELL_PRICE);
@@ -37,14 +37,18 @@ public class HistoryAdapter extends CursorAdapter {
         String price = cursor.getString(priceIndex);
         String time = cursor.getString(timeIndex);
 
-        vh.mAboutQuantity.setText(quantity);
-        vh.mAboutPrice.setText(price);
-        vh.mAboutTime.setText(time);
+        vh.aboutQuantity.setText(quantity);
+        vh.aboutPrice.setText(price);
+        vh.aboutTime.setText(time);
     }
 
-    private static class ViewHolder {
-        TextView mAboutQuantity;
-        TextView mAboutPrice;
-        TextView mAboutTime;
+    static class ViewHolder {
+        @BindView(R.id.edit_quantity_about) TextView aboutQuantity;
+        @BindView(R.id.edit_price_about) TextView aboutPrice;
+        @BindView(R.id.edit_time_about) TextView aboutTime;
+
+        ViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
     }
 }
