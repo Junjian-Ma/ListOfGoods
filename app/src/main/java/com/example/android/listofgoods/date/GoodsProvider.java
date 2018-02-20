@@ -140,7 +140,7 @@ public class GoodsProvider extends ContentProvider {
         if (supplier == null) {
             throw new IllegalArgumentException(getContext().getString(R.string.supplierIsNull));
         }
-        Integer phoneNumber = contentValues.getAsInteger(GoodsEntry.COLUMN_GOODS_PHONE_NUMBER);
+        String phoneNumber = contentValues.getAsString(GoodsEntry.COLUMN_GOODS_PHONE_NUMBER);
         if (phoneNumber == null) {
             throw new IllegalArgumentException(getContext().getString(R.string.numberIsNull));
         }
@@ -268,7 +268,7 @@ public class GoodsProvider extends ContentProvider {
             }
         }
         if (contentValues.containsKey(GoodsEntry.COLUMN_GOODS_PHONE_NUMBER)) {
-            Integer phoneNumber = contentValues.getAsInteger(GoodsEntry.COLUMN_GOODS_PHONE_NUMBER);
+            String phoneNumber = contentValues.getAsString(GoodsEntry.COLUMN_GOODS_PHONE_NUMBER);
             if (phoneNumber == null) {
                 throw new IllegalArgumentException(getContext().getString(R.string.numberIsNull));
             }

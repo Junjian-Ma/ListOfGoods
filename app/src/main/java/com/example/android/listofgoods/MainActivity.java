@@ -1,23 +1,20 @@
 package com.example.android.listofgoods;
 
-import android.Manifest;
 import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -32,8 +29,6 @@ public class MainActivity extends AppCompatActivity
     private static final String LOG_TAG = MainActivity.class.getName();
     private static final int GOODS_LOADER = 0;
     private static final String GOODS_COUNT = "GoodsCount";
-    private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 1;
-    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 2;
 
     private GoodsAdapter goodsAdapter;
     private int goodsCount;
@@ -54,23 +49,6 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // 如果有权限则返回 PackageManager.PERMISSION_GRANTED，否则返回 PackageManager。PERMISSION_DENIED。
-        int readCheck = ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE);
-        int writeCheck = ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        if (readCheck == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        }
-        if (writeCheck == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE);
-        }
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +78,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
+
         getLoaderManager().initLoader(GOODS_LOADER, null, this);
     }
 

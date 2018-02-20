@@ -53,7 +53,7 @@ public class AboutSellActivity extends AppCompatActivity
     private String mName;
     private String mRemarks;
     private String mSupplier;
-    private int mPhoneNumber;
+    private String mPhoneNumber;
     private int mTransport;
     private int mQuantity;
     private int mSellQuantity;
@@ -102,11 +102,10 @@ public class AboutSellActivity extends AppCompatActivity
         String writeQuantityString = writeQuantity.getText().toString();
         String writePriceString = writePrice.getText().toString();
 
-        Utils utils = new Utils();
         if (!writeQuantityString.equals("")
                 && !writePriceString.equals("")
-                && utils.isInteger(writePriceString)
-                && utils.isInteger(writePriceString)) {
+                && Utils.isInteger(writePriceString)
+                && Utils.isInteger(writePriceString)) {
             mSellQuantity = Integer.valueOf(writeQuantityString);
             mSellPrice = Integer.valueOf(writePriceString);
 
@@ -236,7 +235,7 @@ public class AboutSellActivity extends AppCompatActivity
                 mMain = cursor.getInt(mainIndex);
                 mName = cursor.getString(nameIndex);
                 mSupplier = cursor.getString(supplierIndex);
-                mPhoneNumber = cursor.getInt(phoneIndex);
+                mPhoneNumber = cursor.getString(phoneIndex);
                 mTransport = cursor.getInt(transportIndex);
                 mQuantity = cursor.getInt(quantityIndex);
                 mSellQuantity = cursor.getInt(sellQuantityIndex);

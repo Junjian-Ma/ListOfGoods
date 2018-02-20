@@ -21,6 +21,39 @@ public class GoodsDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        createTable(sqLiteDatabase);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int i, int i1) {
+        String columns = GoodsEntry._ID + ", "
+                + GoodsEntry.COLUMN_GOODS_ID + ", "
+                + GoodsEntry.COLUMN_GOODS_MAIN + ", "
+                + GoodsEntry.COLUMN_GOODS_NAME + ", "
+                + GoodsEntry.COLUMN_GOODS_REMARKS + ", "
+                + GoodsEntry.COLUMN_GOODS_SUPPLIER + ", "
+                + GoodsEntry.COLUMN_GOODS_PHONE_NUMBER + ", "
+                + GoodsEntry.COLUMN_GOODS_TRANSPORT + ", "
+                + GoodsEntry.COLUMN_GOODS_QUANTITY + ", "
+                + GoodsEntry.COLUMN_GOODS_SELL_QUANTITY + ", "
+                + GoodsEntry.COLUMN_GOODS_PRICE + ", "
+                + GoodsEntry.COLUMN_GOODS_SELL_PRICE + ", "
+                + GoodsEntry.COLUMN_GOODS_TIME + ", "
+                + GoodsEntry.COLUMN_GOODS_IMAGE;
+
+        switch (i) {
+            case 1:
+                createTable(db);
+            case 2:
+                upgradeTable(db, columns);
+                break;
+            default:
+                break;
+        }
+        Log.i(LOG_TAG, "===============  u p");
+    }
+
+    private void createTable(SQLiteDatabase db) {
         String SQL_CREATE_GOODS_TABLE = "CREATE TABLE "
                 + GoodsEntry.TABLE_NAME + " ("
                 + GoodsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -37,14 +70,41 @@ public class GoodsDbHelper extends SQLiteOpenHelper {
                 + GoodsEntry.COLUMN_GOODS_SELL_PRICE + " INTEGER NOT NULL, "
                 + GoodsEntry.COLUMN_GOODS_TIME + " TEXT, "
                 + GoodsEntry.COLUMN_GOODS_IMAGE + " TEXT);";
-        Log.i(LOG_TAG, "SQL_CREATE_GOODS_TABLE : " + SQL_CREATE_GOODS_TABLE);
 
-        sqLiteDatabase.execSQL(SQL_CREATE_GOODS_TABLE);
+        db.execSQL(SQL_CREATE_GOODS_TABLE);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    private void upgradeTable(SQLiteDatabase db, String columns) {
+        String tableName_temp = GoodsEntry.TABLE_NAME + "_temp";
+        String sql = "ALTER TABLE " + GoodsEntry.TABLE_NAME + " RENAME TO " + tableName_temp;
+        db.execSQL(sql);
 
+        String SQL_CREATE_GOODS_TABLE = "CREATE TABLE "
+                + GoodsEntry.TABLE_NAME + " ("
+                + GoodsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + GoodsEntry.COLUMN_GOODS_ID + " TEXT NOT NULL, "
+                + GoodsEntry.COLUMN_GOODS_MAIN + " INTEGER NOT NULL DEFAULT 0, "
+                + GoodsEntry.COLUMN_GOODS_NAME + " TEXT NOT NULL, "
+                + GoodsEntry.COLUMN_GOODS_REMARKS + " TEXT, "
+                + GoodsEntry.COLUMN_GOODS_SUPPLIER + " TEXT NOT NULL, "
+                + GoodsEntry.COLUMN_GOODS_PHONE_NUMBER + " TEXT NOT NULL, "
+                + GoodsEntry.COLUMN_GOODS_TRANSPORT + " INTEGER NOT NULL, "
+                + GoodsEntry.COLUMN_GOODS_QUANTITY + " INTEGER NOT NULL DEFAULT 0, "
+                + GoodsEntry.COLUMN_GOODS_SELL_QUANTITY + " INTEGER NOT NULL DEFAULT 0, "
+                + GoodsEntry.COLUMN_GOODS_PRICE + " INTEGER NOT NULL, "
+                + GoodsEntry.COLUMN_GOODS_SELL_PRICE + " INTEGER NOT NULL, "
+                + GoodsEntry.COLUMN_GOODS_TIME + " TEXT, "
+                + GoodsEntry.COLUMN_GOODS_IMAGE + " TEXT);";
+        db.execSQL(SQL_CREATE_GOODS_TABLE);
+
+        sql = "INSERT INTO " + GoodsEntry.TABLE_NAME
+                + " (" + columns + ")"
+                + " SELECT "
+                + columns
+                + " FROM " + tableName_temp;
+        db.execSQL(sql);
+
+        String dropTable = "DROP TABLE IF EXISTS " + tableName_temp;
+        db.execSQL(dropTable);
     }
-
 }

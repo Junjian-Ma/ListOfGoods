@@ -104,14 +104,12 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private int mGoodsIdNumber;
     private String mGoodsId = null;
-    private int mPhoneNumber;
+    private String mPhoneNumber;
     private int mQuantity;
     private int mTransportId = 0;
     private Uri mCursorGoodsUri;
     private static Bitmap mImageBitmap;
     private static final String LOG_TAG = EditActivity.class.getName();
-
-    private Utils mUtils;
 
     // 使用 OnTouchListener 检查输入框等是否发生了变化。
     private TextWatcher mTextWatcher = new TextWatcher() {
@@ -144,8 +142,6 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mUtils = new Utils();
-
         // 传递单个货物的 Uri
         Intent intent = getIntent();
         mCursorGoodsUri = intent.getData();
@@ -174,6 +170,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             toggleEditMode(true);
             mIsEditing = false;
             getLoaderManager().initLoader(GOODS_EDITOR, null, this);
+//            floatingActionButton.setImageResource(R.drawable.ic_create_white_24dp);
         }
 
         // 设置 “编辑或保存” 按钮参数
@@ -231,7 +228,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_buy:
-                mUtils.dialPhoneNumber(this, String.valueOf(mPhoneNumber));
+                Utils.dialPhoneNumber(this, mPhoneNumber);
                 break;
             case R.id.button_sell:
                 sellGoods();
@@ -447,19 +444,21 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
         } else if (TextUtils.isEmpty(supplier)) {
             Toast.makeText(this, R.string.supplierTextIsNull, Toast.LENGTH_SHORT).show();
             return false;
-        } else if (TextUtils.isEmpty(phoneNumber) || !mUtils.isInteger(phoneNumber)) {
+        } else if (TextUtils.isEmpty(phoneNumber) || !Utils.isMobile(phoneNumber)) {
             Toast.makeText(this, R.string.phoneNumberTextIsNull, Toast.LENGTH_SHORT).show();
             return false;
-        } else if (TextUtils.isEmpty(quantity) || !mUtils.isInteger(quantity)) {
+        } else if (TextUtils.isEmpty(quantity) || !Utils.isInteger(quantity)) {
             Toast.makeText(this, R.string.quantityTextIsNull, Toast.LENGTH_SHORT).show();
             return false;
-        } else if (TextUtils.isEmpty(price) || !mUtils.isInteger(price)) {
+        } else if (TextUtils.isEmpty(price) || !Utils.isInteger(price)) {
             Toast.makeText(this, R.string.priceTextIsNull, Toast.LENGTH_SHORT).show();
             return false;
         }
 
+        Log.i(LOG_TAG, "====== phone number : " + phoneNumber);
+
         // 获取系统时间
-        String time = mUtils.getNowTime();
+        String time = Utils.getNowTime();
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(GoodsEntry.COLUMN_GOODS_NAME, name);
@@ -660,7 +659,7 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             mGoodsId = cursor.getString(goodsIdIndex);
             String nameText = cursor.getString(nameIndex);
             String supplierText = cursor.getString(supplierIndex);
-            mPhoneNumber = cursor.getInt(phoneIndex);
+            mPhoneNumber = cursor.getString(phoneIndex);
             mTransportId = cursor.getInt(transportIdIndex);
             mQuantity = cursor.getInt(quantityIndex);
             int price = cursor.getInt(priceIndex);
@@ -670,13 +669,13 @@ public class EditActivity extends AppCompatActivity implements LoaderManager.Loa
             goodsIdView.setText(mGoodsId);
             nameView.setText(nameText);
             supplierView.setText(supplierText);
-            phoneNumberView.setText(String.valueOf(mPhoneNumber));
+            phoneNumberView.setText(mPhoneNumber);
             priceView.setText(String.valueOf(price));
             remarksView.setText(remarkText);
 
             name_edit.setText(nameText);
             supplier_edit.setText(supplierText);
-            phone_number_edit.setText(String.valueOf(mPhoneNumber));
+            phone_number_edit.setText(mPhoneNumber);
             price_edit.setText(String.valueOf(price));
             remarks_edit.setText(remarkText);
 

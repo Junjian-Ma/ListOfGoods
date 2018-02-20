@@ -34,7 +34,7 @@ public class GoodsAdapter extends CursorAdapter {
     private int mMain;
     private String mName;
     private String mSupplier;
-    private int mPhoneNumber;
+    private String mPhoneNumber;
     private int mTransport;
     private int mQuantity;
     private int mSellQuantity;
@@ -43,6 +43,8 @@ public class GoodsAdapter extends CursorAdapter {
     private String mRemarks;
     private String mImageId;
     private String mTime;
+
+    private int mButtonId;
 
     GoodsAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
@@ -77,7 +79,7 @@ public class GoodsAdapter extends CursorAdapter {
         mMain = cursor.getInt(mainIndex);
         mName = cursor.getString(nameIndex);
         mSupplier = cursor.getString(supplierIndex);
-        mPhoneNumber = cursor.getInt(phoneIndex);
+        mPhoneNumber = cursor.getString(phoneIndex);
         mTransport = cursor.getInt(transportIndex);
         mQuantity = cursor.getInt(quantityIndex);
         mSellQuantity = cursor.getInt(sellQuantityIndex);
@@ -87,7 +89,7 @@ public class GoodsAdapter extends CursorAdapter {
         mImageId = cursor.getString(imageIdIndex);
         mTime = cursor.getString(timeIndex);
 
-        final int buttonId = cursor.getInt(cursor.getColumnIndex(GoodsEntry._ID));
+        mButtonId = cursor.getInt(cursor.getColumnIndex(GoodsEntry._ID));
 
         String supplierText = String.format(context.getString(R.string.supplierList_main), mSupplier);
         String quantityText = String.format(context.getString(R.string.remainingList_main), mQuantity);
@@ -103,12 +105,10 @@ public class GoodsAdapter extends CursorAdapter {
             public void onClick(View view) {
                 mCursorGoodsUri = ContentUris.withAppendedId(
                         GoodsEntry.CONTENT_URI,
-                        buttonId);
+                        mButtonId);
                 Log.i(LOG_TAG, "Uri ===== " + mCursorGoodsUri);
-
                 sellGoods();
             }
-
         });
 
         if (mImageId == null) {
