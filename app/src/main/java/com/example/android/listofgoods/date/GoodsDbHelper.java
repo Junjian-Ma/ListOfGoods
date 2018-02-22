@@ -11,7 +11,7 @@ public class GoodsDbHelper extends SQLiteOpenHelper {
 
     private static final String LOG_TAG = GoodsDbHelper.class.getName();
 
-    private static final String DATABASE_NAME = "GoodsDate.db";
+    private static final String DATABASE_NAME = "GoodsData.db";
 
     private static final int DATABASE_VERSION = 1;
 

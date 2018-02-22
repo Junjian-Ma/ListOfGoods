@@ -76,11 +76,6 @@ public class AboutSellActivity extends AppCompatActivity
 
         listView.setAdapter(historyAdapter);
         listView.setEmptyView(noHasHistory);
-        if (listView.getVisibility() != View.VISIBLE) {
-            historyTitle.setVisibility(View.GONE);
-        } else {
-            historyTitle.setVisibility(View.VISIBLE);
-        }
 
         getLoaderManager().initLoader(GOODS_LIST, null, this);
         if (mCursorGoodsUri != null) {

@@ -30,21 +30,21 @@ public class GoodsAdapter extends CursorAdapter {
     private Uri mCursorGoodsUri;
     private Context mContext;
 
-    private String mGoodsId;
-    private int mMain;
-    private String mName;
-    private String mSupplier;
-    private String mPhoneNumber;
-    private int mTransport;
-    private int mQuantity;
-    private int mSellQuantity;
-    private int mPrice;
-    private int mSellPrice;
-    private String mRemarks;
-    private String mImageId;
-    private String mTime;
-
-    private int mButtonId;
+//    private String mGoodsId;
+//    private int mMain;
+//    private String mName;
+//    private String mSupplier;
+//    private String mPhoneNumber;
+//    private int mTransport;
+//    private int mQuantity;
+//    private int mSellQuantity;
+//    private int mPrice;
+//    private int mSellPrice;
+//    private String mRemarks;
+//    private String mImageId;
+//    private String mTime;
+//
+//    private int mButtonId;
 
     GoodsAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
@@ -60,6 +60,7 @@ public class GoodsAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
         ViewHolder vh = new ViewHolder(view);
+        final GoodBean goodBean = new GoodBean();
 
         int goodsIdIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_ID);
         int mainIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_MAIN);
@@ -75,27 +76,27 @@ public class GoodsAdapter extends CursorAdapter {
         int imageIdIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_IMAGE);
         int timeIndex = cursor.getColumnIndex(GoodsEntry.COLUMN_GOODS_TIME);
 
-        mGoodsId = cursor.getString(goodsIdIndex);
-        mMain = cursor.getInt(mainIndex);
-        mName = cursor.getString(nameIndex);
-        mSupplier = cursor.getString(supplierIndex);
-        mPhoneNumber = cursor.getString(phoneIndex);
-        mTransport = cursor.getInt(transportIndex);
-        mQuantity = cursor.getInt(quantityIndex);
-        mSellQuantity = cursor.getInt(sellQuantityIndex);
-        mPrice = cursor.getInt(priceIndex);
-        mSellPrice = cursor.getInt(sellPriceIndex);
-        mRemarks = cursor.getString(remarkIndex);
-        mImageId = cursor.getString(imageIdIndex);
-        mTime = cursor.getString(timeIndex);
+        goodBean.mGoodsId = cursor.getString(goodsIdIndex);
+        goodBean.mMain = cursor.getInt(mainIndex);
+        goodBean.mName = cursor.getString(nameIndex);
+        goodBean.mSupplier = cursor.getString(supplierIndex);
+        goodBean.mPhoneNumber = cursor.getString(phoneIndex);
+        goodBean.mTransport = cursor.getInt(transportIndex);
+        goodBean.mQuantity = cursor.getInt(quantityIndex);
+        goodBean.mSellQuantity = cursor.getInt(sellQuantityIndex);
+        goodBean.mPrice = cursor.getInt(priceIndex);
+        goodBean.mSellPrice = cursor.getInt(sellPriceIndex);
+        goodBean.mRemarks = cursor.getString(remarkIndex);
+        goodBean.mImageId = cursor.getString(imageIdIndex);
+        goodBean.mTime = cursor.getString(timeIndex);
 
-        mButtonId = cursor.getInt(cursor.getColumnIndex(GoodsEntry._ID));
+        goodBean.mButtonId = cursor.getInt(cursor.getColumnIndex(GoodsEntry._ID));
 
-        String supplierText = String.format(context.getString(R.string.supplierList_main), mSupplier);
-        String quantityText = String.format(context.getString(R.string.remainingList_main), mQuantity);
-        String priceText = String.format(context.getString(R.string.pricingList_main), mPrice);
+        String supplierText = String.format(context.getString(R.string.supplierList_main), goodBean.mSupplier);
+        String quantityText = String.format(context.getString(R.string.remainingList_main), goodBean.mQuantity);
+        String priceText = String.format(context.getString(R.string.pricingList_main), goodBean.mPrice);
 
-        vh.nameText.setText(mName);
+        vh.nameText.setText(goodBean.mName);
         vh.supplierText.setText(supplierText);
         vh.quantityText.setText(String.valueOf(quantityText));
         vh.priceText.setText(String.valueOf(priceText));
@@ -105,33 +106,32 @@ public class GoodsAdapter extends CursorAdapter {
             public void onClick(View view) {
                 mCursorGoodsUri = ContentUris.withAppendedId(
                         GoodsEntry.CONTENT_URI,
-                        mButtonId);
+                        goodBean.mButtonId);
                 Log.i(LOG_TAG, "Uri ===== " + mCursorGoodsUri);
-                sellGoods();
+                sellGoods(goodBean);
             }
         });
 
-        if (mImageId == null) {
+        if (goodBean.mImageId == null) {
             vh.imageView.setImageResource(R.drawable.no_image);
         } else {
             // 将保存在数据库的位图字符串转换为位图，并使用
-            byte[] bytes = Base64.decode(mImageId, Base64.DEFAULT);
+            byte[] bytes = Base64.decode(goodBean.mImageId, Base64.DEFAULT);
             Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             vh.imageView.setImageBitmap(bitmap);
         }
-
     }
 
-    private void sellGoods() {
-        if(mQuantity == 0) {
+    private void sellGoods(GoodBean goodBean) {
+        if(goodBean.mQuantity == 0) {
             Toast.makeText(mContext, R.string.soldOut, Toast.LENGTH_SHORT).show();
         } else {
-            mQuantity = mQuantity - 1;
-            saveGoods();
+            goodBean.mQuantity = goodBean.mQuantity - 1;
+            saveGoods(goodBean);
         }
     }
 
-    private void saveGoods() {
+    private void saveGoods(GoodBean goodBean) {
         ContentValues values = new ContentValues();
         values.put(GoodsEntry.COLUMN_GOODS_MAIN, false);
         int rowsUpdate = mContext.getContentResolver().update(
@@ -140,22 +140,41 @@ public class GoodsAdapter extends CursorAdapter {
             Toast.makeText(mContext, R.string.updateTextError, Toast.LENGTH_SHORT).show();
         }
 
+        goodBean.mSellQuantity = 1;
+
         ContentValues contentValues = new ContentValues();
-        contentValues.put(GoodsEntry.COLUMN_GOODS_ID, mGoodsId);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_MAIN, mMain);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_NAME, mName);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_REMARKS, mRemarks);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_SUPPLIER, mSupplier);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_PHONE_NUMBER, mPhoneNumber);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_TRANSPORT, mTransport);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_QUANTITY, mQuantity);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_SELL_QUANTITY, mSellQuantity);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_PRICE, mPrice);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_SELL_PRICE, mSellPrice);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_TIME, mTime);
-        contentValues.put(GoodsEntry.COLUMN_GOODS_IMAGE, mImageId);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_ID, goodBean.mGoodsId);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_MAIN, goodBean.mMain);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_NAME, goodBean.mName);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_REMARKS, goodBean.mRemarks);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_SUPPLIER, goodBean.mSupplier);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_PHONE_NUMBER, goodBean.mPhoneNumber);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_TRANSPORT, goodBean.mTransport);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_QUANTITY, goodBean.mQuantity);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_SELL_QUANTITY, goodBean.mSellQuantity);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_PRICE, goodBean.mPrice);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_SELL_PRICE, goodBean.mSellPrice);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_TIME, goodBean.mTime);
+        contentValues.put(GoodsEntry.COLUMN_GOODS_IMAGE, goodBean.mImageId);
 
         mCursorGoodsUri = mContext.getContentResolver().insert(GoodsEntry.CONTENT_URI, contentValues);
+    }
+
+    public class GoodBean {
+        int mButtonId;
+        String mGoodsId;
+        int mMain;
+        String mName;
+        String mSupplier;
+        String mPhoneNumber;
+        int mTransport;
+        int mQuantity;
+        int mSellQuantity;
+        int mPrice;
+        int mSellPrice;
+        String mRemarks;
+        String mImageId;
+        String mTime;
     }
 
     static class ViewHolder {
