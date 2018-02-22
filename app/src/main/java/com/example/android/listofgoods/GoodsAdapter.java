@@ -30,22 +30,6 @@ public class GoodsAdapter extends CursorAdapter {
     private Uri mCursorGoodsUri;
     private Context mContext;
 
-//    private String mGoodsId;
-//    private int mMain;
-//    private String mName;
-//    private String mSupplier;
-//    private String mPhoneNumber;
-//    private int mTransport;
-//    private int mQuantity;
-//    private int mSellQuantity;
-//    private int mPrice;
-//    private int mSellPrice;
-//    private String mRemarks;
-//    private String mImageId;
-//    private String mTime;
-//
-//    private int mButtonId;
-
     GoodsAdapter(Context context, Cursor cursor) {
         super(context, cursor, 0);
         mContext = context;
